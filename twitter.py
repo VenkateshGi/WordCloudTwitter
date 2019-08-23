@@ -1,9 +1,16 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Aug 22 13:17:09 2019
+
+@author: hp
+"""
+
 import base64
 import pandas as pd
 import requests
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-
+import nltk
 from nltk.stem import WordNetLemmatizer
 import re
 from nltk.corpus import stopwords
@@ -14,8 +21,17 @@ def pre_processing(sentence):
     #sentence = re.sub("\d+"," ",sentence)
     sentence = re.sub('[!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~]'," ",sentence)
     stem = ""
-    for word in sentence.split():
+    Actual_Words = ["JJ","JJR","JJS",\
+                    "RB","RBR","RBS"\
+                    "UH",]
+                    #"VBG","VBP"]
+    Total_Words = nltk.pos_tag(sentence.split())
+    Final_Words = [word[0] for word in Total_Words if word[1] in Actual_Words]
+
+    print("----",)
+    for word in Final_Words:
         if word not in stopwords:
+            #print("-----",nltk.pos_tag(word))
             stem+=(lemmatizer.lemmatize(word)+" ")
     return stem[:-1]
 pre_processing("On Feb. 19, the physician-services provide")
@@ -113,7 +129,7 @@ class Twitter():
 
 #print(item.get_token())
 
-metro_polices = ["#ChiLaSow"]
+metro_polices = ["SyeRaNarasimhaReddy"]
 from pprint import pprint
 #[pprint(item["text"]) for item in police["statuses"]]
 public_requests_police = pd.DataFrame()
@@ -153,7 +169,7 @@ for index,search_query in enumerate(metro_polices):
 
 			if "retweeted_status" in user:
 				is_retweeted = "yes"
-				continue
+				#continue
 				who_retweeted = user["retweeted_status"]["user"]["screen_name"]
 			else:
 				is_retweeted = "no"
