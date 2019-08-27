@@ -1,0 +1,12 @@
+
+body {
+	background-image: linear-gradient(to right bottom, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ed, #78b4f5, #67c0fa, #4cd1ff, #34e1ff, #35f1fe, #53fff4);
+  /*  height: 100%;
+    margin: 0;*/
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+nav.navbar.navbar-expand-lg.navbar-dark{
+	background-color: rgba(255,255,255,0.3);
+}
