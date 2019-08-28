@@ -22,12 +22,12 @@ def pre_processing(sentence):
     Total_Words=[]
     for i in sentence.split():
         Total_Words.append(nltk.pos_tag([i])[0])
-        
+
     print(Total_Words)
     #Total_Words = nltk.pos_tag(nltk.word_tokenize(sentence))
     #print(nltk.word_tokenize(sentence))
     #random.shuffle(Total_Words)
-    
+
     print([item for item in Total_Words if item[1]=="JJ"])
     Final_Words = [word[0] for word in Total_Words if word[1] in Actual_Words]
 
@@ -137,7 +137,7 @@ class Twitter():
 
 #print(item.get_token())
 
-metro_polices = ["#AngelHasFallen"]
+metro_polices = ["#Manmadhudu2"]
 from pprint import pprint
 #[pprint(item["text"]) for item in police["statuses"]]
 public_requests_police = pd.DataFrame()
@@ -182,22 +182,28 @@ for index,search_query in enumerate(metro_polices):
             else:
                 is_retweeted = "no"
                 who_retweeted = "NA"
-            if check_good_or_not(user["full_text"])==0:    
+            if check_good_or_not(user["full_text"])==0:
                 continue
-            
+
             rows_count = rows_count+1
+            if user["retweet_count"]>=500:
+                tweet_text = user["full_text"]+" "
+                tweet_text = tweet_text*4
+            else:
+                tweet_text = user["full_text"]
+
             rows.append([user["user"]["name"],user["user"]["screen_name"],user["user"]["location"],user["user"]["description"]\
-            ,user["full_text"],user["in_reply_to_screen_name"],str(get_mentioned_urls(user)),user["lang"],"https://twitter.com/statuses/"+user["id_str"],is_retweeted,who_retweeted\
-            ,str(get_hashtags(user)),str(get_user_mentions(user)), get_date_format(user["created_at"]), get_time_format(user["created_at"])])
+            ,tweet_text,user["retweet_count"],user["in_reply_to_screen_name"],str(get_mentioned_urls(user)),user["lang"],"https://twitter.com/statuses/"+user["id_str"],is_retweeted,who_retweeted\
+            ,str(get_hashtags(user)),str(get_user_mentions(user)), get_date_format(user["created_at"]), get_time_format(user["created_at"]),user["geo"]])
         if "next_results" not in police["search_metadata"]:
             print("main_sdfjaksdljfaklsd ---->>>",police)
             break
         #print(rows)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",_)
+        #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",_)
         print("????????????????",police["search_metadata"])
         next = police["search_metadata"]["next_results"]
         print(next)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",_)
+        #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",_)
 
         new_params = {item.split('=')[0]:item.split('=')[1] for item in next[1:].split('&')}
         #parameter[""]= police["search_metadata"]["next_results"]
@@ -208,8 +214,8 @@ for index,search_query in enumerate(metro_polices):
         parameter["q"] = search_query
         #print("^^^^^^^",total_count,"^^^^^^")
     #print(rows)
-    tweets = pd.DataFrame(rows,columns = ["User_Name", "Twitter_Name","Location", "Bio", "Tweet","Replied_to","media","Language","Tweet_Link",\
-    "is_Retweeted","Original_Tweet_by","Hashtags","User_Mentions","tweet_date","tweet_time"])
+    tweets = pd.DataFrame(rows,columns = ["User_Name", "Twitter_Name","Location", "Bio", "Tweet","Retweet_Count","Replied_to","media","Language","Tweet_Link",\
+    "is_Retweeted","Original_Tweet_by","Hashtags","User_Mentions","tweet_date","tweet_time","GEO"])
     #print(rows)
     #print("these are tweets:::",tweets)
     public_requests_police = public_requests_police.append(tweets,ignore_index = True)
@@ -230,7 +236,7 @@ for i in metro_polices:
     wordcloud = WordCloud(width = 800, height = 800,
                 background_color ='white',
                 min_font_size = 10).generate(processed_temp)
-    
+
 
     # plot the WordCloud image
     plt.figure(figsize = (8, 8), facecolor = None)
