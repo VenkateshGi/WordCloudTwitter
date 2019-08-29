@@ -136,107 +136,107 @@ class Twitter():
         return search_resp
 
 #print(item.get_token())
-
-metro_polices = ["#AngelHasFallen"]
-from pprint import pprint
-#[pprint(item["text"]) for item in police["statuses"]]
-public_requests_police = pd.DataFrame()
-for index,search_query in enumerate(metro_polices):
-    item = Twitter()
-    item.get_token()
-    #created object
-    parameter = {
-    'q': search_query,
-    'result_type': "recent",
-    'tweet_mode' : "extended",
-    'count': 100,
-    #'include_entities':1,
-    }
-    rows_count = 0
-    rows = []
-    while(rows_count<=1000):
-        #total_count+=1
-        print("search_params : ",parameter)
-
-        police = item.search_request(search_query, search_params = parameter).json()
-
-        count = 1
-        #print(police)
-        for user in police["statuses"]:
-            print("*****************")
-            #print("User Description : "+user["user"]["description"])
-            #print("User Name : "+user["user"]["name"])
-            #print("Twitter Name : "+user["user"]["screen_name"])
-            #print("profile URL : "+user["user"]["url"])
-            #print("Tweet Text : "+user["full_text"])
-            #print("Link to tweet : https://twitter.com/statuses/"+user["id_str"])
-            print("*****************----",count)
-            count+=1
-
-
-
-            if "retweeted_status" in user:
-                is_retweeted = "yes"
-                who_retweeted = user["retweeted_status"]["user"]["screen_name"]
-                continue
-            else:
-                is_retweeted = "no"
-                who_retweeted = "NA"
-            if check_good_or_not(user["full_text"])==0:    
-                continue
-            
-            rows_count = rows_count+1
-            rows.append([user["user"]["name"],user["user"]["screen_name"],user["user"]["location"],user["user"]["description"]\
-            ,user["full_text"],user["in_reply_to_screen_name"],str(get_mentioned_urls(user)),user["lang"],"https://twitter.com/statuses/"+user["id_str"],is_retweeted,who_retweeted\
-            ,str(get_hashtags(user)),str(get_user_mentions(user)), get_date_format(user["created_at"]), get_time_format(user["created_at"])])
-        if "next_results" not in police["search_metadata"]:
-            print("main_sdfjaksdljfaklsd ---->>>",police)
-            break
-        #print(rows)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",_)
-        print("????????????????",police["search_metadata"])
-        next = police["search_metadata"]["next_results"]
-        print(next)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",_)
-
-        new_params = {item.split('=')[0]:item.split('=')[1] for item in next[1:].split('&')}
-        #parameter[""]= police["search_metadata"]["next_results"]
-        parameter.update(new_params)
-        parameter["max_id"] = int(parameter["max_id"])
-        parameter["count"] = int(parameter["count"])
-        parameter["include_entities"] = 'true'
-        parameter["q"] = search_query
-        #print("^^^^^^^",total_count,"^^^^^^")
-    #print(rows)
-    tweets = pd.DataFrame(rows,columns = ["User_Name", "Twitter_Name","Location", "Bio", "Tweet","Replied_to","media","Language","Tweet_Link",\
-    "is_Retweeted","Original_Tweet_by","Hashtags","User_Mentions","tweet_date","tweet_time"])
-    #print(rows)
-    #print("these are tweets:::",tweets)
-    public_requests_police = public_requests_police.append(tweets,ignore_index = True)
-    tweets.to_excel(search_query+".xlsx")
-    #pprint(police)
-public_requests_police.to_excel("public_requests_police.xlsx")
-
-print("---------------------------------------------------------------------")
-
-for i in metro_polices:
-    word_cloud = pd.read_excel(i+".xlsx",columns = ["Tweet"])
-    temp = word_cloud.Tweet.to_string()
-    temp = re.sub("RT ","",temp)
-    temp = re.sub("(#[\d\w]+)|@[\d\w]+","",temp)
-    temp = re.sub("https.*\s","",temp)
-    processed_temp = pre_processing(temp)
-    #print(processed_temp)
-    wordcloud = WordCloud(width = 800, height = 800,
-                background_color ='white',
-                min_font_size = 10).generate(processed_temp)
+def func_twitter():
+    metro_polices = ["#AngelHasFallen"]
+    from pprint import pprint
+    #[pprint(item["text"]) for item in police["statuses"]]
+    public_requests_police = pd.DataFrame()
+    for index,search_query in enumerate(metro_polices):
+        item = Twitter()
+        item.get_token()
+        #created object
+        parameter = {
+        'q': search_query,
+        'result_type': "recent",
+        'tweet_mode' : "extended",
+        'count': 100,
+        #'include_entities':1,
+        }
+        rows_count = 0
+        rows = []
+        while(rows_count<=1000):
+            #total_count+=1
+            print("search_params : ",parameter)
     
-
-    # plot the WordCloud image
-    plt.figure(figsize = (8, 8), facecolor = None)
-    plt.imshow(wordcloud)
-    plt.axis("off")
-    plt.tight_layout(pad = 0)
-    plt.savefig(i+"without_RT_without_HT_with_digits_co_v3.jpg")
-    plt.show()
-    print(wordcloud.process_text(processed_temp))
+            police = item.search_request(search_query, search_params = parameter).json()
+    
+            count = 1
+            #print(police)
+            for user in police["statuses"]:
+                print("*****************")
+                #print("User Description : "+user["user"]["description"])
+                #print("User Name : "+user["user"]["name"])
+                #print("Twitter Name : "+user["user"]["screen_name"])
+                #print("profile URL : "+user["user"]["url"])
+                #print("Tweet Text : "+user["full_text"])
+                #print("Link to tweet : https://twitter.com/statuses/"+user["id_str"])
+                print("*****************----",count)
+                count+=1
+    
+    
+    
+                if "retweeted_status" in user:
+                    is_retweeted = "yes"
+                    who_retweeted = user["retweeted_status"]["user"]["screen_name"]
+                    continue
+                else:
+                    is_retweeted = "no"
+                    who_retweeted = "NA"
+                if check_good_or_not(user["full_text"])==0:    
+                    continue
+                
+                rows_count = rows_count+1
+                rows.append([user["user"]["name"],user["user"]["screen_name"],user["user"]["location"],user["user"]["description"]\
+                ,user["full_text"],user["in_reply_to_screen_name"],str(get_mentioned_urls(user)),user["lang"],"https://twitter.com/statuses/"+user["id_str"],is_retweeted,who_retweeted\
+                ,str(get_hashtags(user)),str(get_user_mentions(user)), get_date_format(user["created_at"]), get_time_format(user["created_at"])])
+            if "next_results" not in police["search_metadata"]:
+                print("main_sdfjaksdljfaklsd ---->>>",police)
+                break
+            #print(rows)
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print("????????????????",police["search_metadata"])
+            next = police["search_metadata"]["next_results"]
+            print(next)
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",)
+    
+            new_params = {item.split('=')[0]:item.split('=')[1] for item in next[1:].split('&')}
+            #parameter[""]= police["search_metadata"]["next_results"]
+            parameter.update(new_params)
+            parameter["max_id"] = int(parameter["max_id"])
+            parameter["count"] = int(parameter["count"])
+            parameter["include_entities"] = 'true'
+            parameter["q"] = search_query
+            #print("^^^^^^^",total_count,"^^^^^^")
+        #print(rows)
+        tweets = pd.DataFrame(rows,columns = ["User_Name", "Twitter_Name","Location", "Bio", "Tweet","Replied_to","media","Language","Tweet_Link",\
+        "is_Retweeted","Original_Tweet_by","Hashtags","User_Mentions","tweet_date","tweet_time"])
+        #print(rows)
+        #print("these are tweets:::",tweets)
+        public_requests_police = public_requests_police.append(tweets,ignore_index = True)
+        tweets.to_excel(search_query+".xlsx")
+        #pprint(police)
+    public_requests_police.to_excel("public_requests_police.xlsx")
+    
+    print("---------------------------------------------------------------------")
+    
+    for i in metro_polices:
+        word_cloud = pd.read_excel(i+".xlsx",columns = ["Tweet"])
+        temp = word_cloud.Tweet.to_string()
+        temp = re.sub("RT ","",temp)
+        temp = re.sub("(#[\d\w]+)|@[\d\w]+","",temp)
+        temp = re.sub("https.*\s","",temp)
+        processed_temp = pre_processing(temp)
+        #print(processed_temp)
+        wordcloud = WordCloud(width = 800, height = 800,
+                    background_color ='white',
+                    min_font_size = 10).generate(processed_temp)
+        
+    
+        # plot the WordCloud image
+        plt.figure(figsize = (8, 8), facecolor = None)
+        plt.imshow(wordcloud)
+        plt.axis("off")
+        plt.tight_layout(pad = 0)
+        plt.savefig(i+"without_RT_without_HT_with_digits_co_v3.jpg")
+        plt.show()
+        print(wordcloud.process_text(processed_temp))
